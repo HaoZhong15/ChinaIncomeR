@@ -16,7 +16,7 @@ to demonstrate debugging programming techniques in R.
 
 knitr::opts_chunk$set(echo = TRUE)
 library(ChinaIncomeR)
-
+library(ggplot2)
 
 ```
 
@@ -37,7 +37,7 @@ summary(ChinaIncome)
 # Step 3 - Buggy function and traceback()
 Goal: Calculate the average proportion of agricultural output value to total output value,but "agriculture" was spell wrong in "agric".
 
-```{r, "Step 3"}
+```{r step3_buggy, error=TRUE}
 # Deliberately buggy function: misspells `agriculture` as `agric`
 sector_share_buggy <- function(df) {
   # BUG: wrong column name `agric`
@@ -144,3 +144,37 @@ check_totals <- function(df) {
 # Browse[1]> summary(total)
 #   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 #    500    1068    1966    2657    3448    9103 
+
+```
+
+# Step 7 - Create a barplot
+
+```{r step8_buggy, error=TRUE}
+
+
+# BUG: misspelled 'industry' as 'indstry'
+ggplot(ChinaIncome, aes(x = rownames, y = indstry)) +
+  geom_col(fill = "green") +
+  labs(title = "Industrial Output by Region",
+       x = "Region", y = "Industry Output")
+
+# Inspect error
+traceback()
+
+
+# after running traceback, we know that:
+
+# The code fails because `indstry` does not exist in the dataset. I used the worng value.
+
+#`traceback()` shows that the error occurred when evaluating aesthetics inside `ggplot()`, helping us identify the incorrect column.
+
+```
+
+
+# Step 8 - fixing the barplot
+
+```{r, "Step 8"}
+ggplot(ChinaIncome, aes(x = rownames, y = industry)) +
+  geom_col(fill = "darkgreen") +
+  labs(title = "Industrial Output by Region (Corrected)",
+       x = "Region", y = "Industry Output")

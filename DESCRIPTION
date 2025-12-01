@@ -1,0 +1,19 @@
+Package: ChinaIncomeR
+Title: Final Project: China Income Statistics Dataset and Debugging
+Version: 0.0.0.9000
+Authors@R: 
+    person("Hao", "Zhong", , "hzhong5@usf.edu", role = c("aut", "cre"))
+Description: This package provides the ChinaIncome dataset derived from ChinaIncome.csv 
+    and example functions for debugging and defensive programming in R. It is 
+    intended for use in coursework to demonstrate R package structure, data 
+    documentation, and common debugging techniques.
+Depends: 
+    R (>= 3.5)
+Imports:
+    readr,
+    dplyr
+License: CC0
+LazyData: true
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3

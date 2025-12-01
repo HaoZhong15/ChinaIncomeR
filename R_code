@@ -1,0 +1,146 @@
+---
+title: "Debugging programming with ChinaIncomeR"
+author: "Hao Zhong"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+---
+
+# Instructions
+I uses the ChinaIncome dataset from: https://vincentarelbundock.github.io/Rdatasets/datasets.html
+to demonstrate debugging programming techniques in R.
+---
+
+```{r setup, message = FALSE}
+
+knitr::opts_chunk$set(echo = TRUE)
+library(ChinaIncomeR)
+
+
+```
+
+
+
+# Step 2 - Loading and exploring the ChinaIncome dataset 
+
+```{r, "Step 2"}
+data("ChinaIncome")
+str(ChinaIncome)
+summary(ChinaIncome)
+
+```
+
+---
+
+
+# Step 3 - Buggy function and traceback()
+Goal: Calculate the average proportion of agricultural output value to total output value,but "agriculture" was spell wrong in "agric".
+
+```{r, "Step 3"}
+# Deliberately buggy function: misspells `agriculture` as `agric`
+sector_share_buggy <- function(df) {
+  # BUG: wrong column name `agric`
+  df$total <- df$agric + df$commerce + df$construction +
+              df$industry + df$transport
+  df$ag_share <- df$agriculture / df$total
+  mean(df$ag_share, na.rm = TRUE)
+}
+
+# This call will fail
+sector_share_buggy(ChinaIncome)
+
+# use traceback to see where the error is
+traceback()
+
+```
+
+---
+
+
+# Step 4 - Fixing
+
+```{r, "Step 4"}
+# Correct version: use the actual column names in ChinaIncome
+avg_ag_share <- function(df) {
+  total <- df$agriculture + df$commerce + df$construction +
+           df$industry + df$transport
+  share <- df$agriculture / total
+  mean(share, na.rm = TRUE)
+}
+
+avg_ag_share(ChinaIncome)
+
+
+```
+---
+
+
+# Step 5 - Using debug() to step through a function
+
+
+```{r, "Step 5"}
+
+high_ag_flag_buggy <- function(df) {
+  # BUG: && only tests the first row
+  df$high_ag <- df$agriculture > 500 && df$industry > 800
+  df
+}
+
+debug(high_ag_flag_buggy)
+
+
+#
+
+# run in the console: res_buggy <- high_ag_flag_buggy(ChinaIncome)  
+
+# after run in the console, we get:
+# error in df$agriculture > 500 && df$industry > 800: 'length = 37' in coercion to 'logical(1)'
+
+
+```
+
+## Step 5.1 - fixing
+```{r, "Step 5.2"}
+# Write your code below.
+
+
+high_ag_flag <- function(df) {
+  df$high_ag <- df$agriculture > 500 & df$industry > 800
+  df
+}
+
+head(high_ag_flag(ChinaIncome))
+
+```
+
+
+---
+
+
+# Step 6 - Using browser() as a breakpoint
+Insert 'browser()' into the function for calculating the total output value and proportion, and pause in the middle to check the intermediate results.
+
+
+
+```{r, "Step 6"}
+
+check_totals <- function(df) {
+  total <- df$agriculture + df$commerce + df$construction +
+           df$industry + df$transport
+
+  browser()  # execution will pause here
+
+  share <- df$agriculture / total
+  summary(share)
+
+  invisible(share)
+}
+
+# run this in console:  tot_share <- check_totals(ChinaIncome)
+
+# we will get: 
+# Called from: check_totals(ChinaIncome)
+# Browse[1]> summary(total)
+#   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+#    500    1068    1966    2657    3448    9103 

@@ -1,2 +1,3 @@
 My final project introduced the development of an R package called ChinaIncomeR. This data package includes a clean dataset called ChinaIncome, which contains agricultural, commercial, construction, industrial, and transportation output values from multiple regions. Using standard tools such as usethis, devtools, and roxygen2, this project demonstrated how to build R packages, record datasets, manage version control through Git/GitHub, and organize repeatable code through the accompanying R Markdown report. The R Markdown file demonstrates the use of traceback() to identify error locations, debug() to traverse error logic, and browser() to set breakpoints within functions.
-you can fine the dataset from: https://vincentarelbundock.github.io/Rdatasets/datasets.html
+
+You can fine the dataset from: https://vincentarelbundock.github.io/Rdatasets/datasets.html
